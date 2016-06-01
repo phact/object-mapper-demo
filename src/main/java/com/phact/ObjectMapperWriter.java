@@ -33,7 +33,7 @@ public class ObjectMapperWriter {
             m.setDefaultSaveOptions(saveNullFields(false));
 
             for (int i=0; i< 1000; i++) {
-                SparseTable row1 = new SparseTable("a");
+                SparseTable row1 = new SparseTable(String.valueOf(Math.floor((Math.random()*10000))));
                 m.save(row1);
                 System.out.println(i);
             }
