@@ -4,15 +4,17 @@ package com.phact;
  * Created by sebastianestevez on 5/31/16.
  */
 
+import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
+import com.datastax.driver.mapping.Mapper;
+import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
-import com.google.common.base.Objects;
-import com.datastax.driver.mapping.MappingManager;
-import com.datastax.driver.mapping.Mapper;
-import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.annotations.Table;
-import static com.datastax.driver.mapping.Mapper.Option.*;
+import com.google.common.base.Objects;
+
+import static com.datastax.driver.mapping.Mapper.Option.saveNullFields;
 
 
 public class ObjectMapperWriter {
@@ -32,10 +34,19 @@ public class ObjectMapperWriter {
 
             m.setDefaultSaveOptions(saveNullFields(false));
 
+            BatchStatement batch = new BatchStatement();
             for (int i=0; i< 1000; i++) {
-                SparseTable row1 = new SparseTable(String.valueOf(Math.floor((Math.random()*10000))));
-                m.save(row1);
-                System.out.println(i);
+                //String value = String.valueOf(Math.floor((Math.random()*1000000000)));
+                String value = String.valueOf(i);
+                System.out.println(value);
+                SparseTable row1 = new SparseTable(value);
+                batch.add(m.saveQuery(row1));
+                System.out.println("add: " + i);
+                if ( i%9 ==0 ){
+                    session.execute(batch);
+                    batch.clear();
+                    System.out.println("execute: " +i);
+                }
             }
 
             System.out.println("Done");
@@ -47,6 +58,163 @@ public class ObjectMapperWriter {
 
 
     }
+
+
+
+    /**
+     CREATE TABLE testks.sparsetable (
+     field1 text PRIMARY KEY,
+     field0 text,
+     field10 text,
+     field100 text,
+     field101 text,
+     field102 text,
+     field103 text,
+     field104 text,
+     field105 text,
+     field106 text,
+     field107 text,
+     field108 text,
+     field109 text,
+     field11 text,
+     field110 text,
+     field111 text,
+     field112 text,
+     field113 text,
+     field114 text,
+     field115 text,
+     field116 text,
+     field117 text,
+     field118 text,
+     field119 text,
+     field12 text,
+     field120 text,
+     field121 text,
+     field122 text,
+     field123 text,
+     field124 text,
+     field125 text,
+     field126 text,
+     field127 text,
+     field128 text,
+     field129 text,
+     field13 text,
+     field130 text,
+     field131 text,
+     field132 text,
+     field133 text,
+     field134 text,
+     field135 text,
+     field136 text,
+     field137 text,
+     field138 text,
+     field139 text,
+     field14 text,
+     field140 text,
+     field141 text,
+     field142 text,
+     field143 text,
+     field144 text,
+     field145 text,
+     field146 text,
+     field147 text,
+     field148 text,
+     field149 text,
+     field15 text,
+     field16 text,
+     field17 text,
+     field18 text,
+     field19 text,
+     field2 text,
+     field20 text,
+     field21 text,
+     field22 text,
+     field23 text,
+     field24 text,
+     field25 text,
+     field26 text,
+     field27 text,
+     field28 text,
+     field29 text,
+     field3 text,
+     field30 text,
+     field31 text,
+     field32 text,
+     field33 text,
+     field34 text,
+     field35 text,
+     field36 text,
+     field37 text,
+     field38 text,
+     field39 text,
+     field4 text,
+     field40 text,
+     field41 text,
+     field42 text,
+     field43 text,
+     field44 text,
+     field45 text,
+     field46 text,
+     field47 text,
+     field48 text,
+     field49 text,
+     field5 text,
+     field50 text,
+     field51 text,
+     field52 text,
+     field53 text,
+     field54 text,
+     field55 text,
+     field56 text,
+     field57 text,
+     field58 text,
+     field59 text,
+     field6 text,
+     field60 text,
+     field61 text,
+     field62 text,
+     field63 text,
+     field64 text,
+     field65 text,
+     field66 text,
+     field67 text,
+     field68 text,
+     field69 text,
+     field7 text,
+     field70 text,
+     field71 text,
+     field72 text,
+     field73 text,
+     field74 text,
+     field75 text,
+     field76 text,
+     field77 text,
+     field78 text,
+     field79 text,
+     field8 text,
+     field80 text,
+     field81 text,
+     field82 text,
+     field83 text,
+     field84 text,
+     field85 text,
+     field86 text,
+     field87 text,
+     field88 text,
+     field89 text,
+     field9 text,
+     field90 text,
+     field91 text,
+     field92 text,
+     field93 text,
+     field94 text,
+     field95 text,
+     field96 text,
+     field97 text,
+     field98 text,
+     field99 text
+     )
+     */
 
     @Table(name = "sparsetable",keyspace = "testks",
             readConsistency = "ONE",
