@@ -2,6 +2,7 @@ package com.phact;
 
 /**
  * Created by sebastianestevez on 5/31/16.
+ *
  */
 
 import com.datastax.driver.core.BatchStatement;
@@ -24,7 +25,7 @@ public class ObjectMapperWriter {
         try {
             cluster = Cluster.builder()                                                    // (1)
                     //.addContactPoint("127.0.0.1")
-                    .addContactPoint("52.53.231.224")
+                    .addContactPoint("54.183.166.39")
                     .build();
             Session session = cluster.connect();                                           // (2)
 
@@ -35,7 +36,7 @@ public class ObjectMapperWriter {
             m.setDefaultSaveOptions(saveNullFields(false));
 
             BatchStatement batch = new BatchStatement();
-            for (int i=0; i< 1000; i++) {
+            for (int i=0; i< 100000000; i++) {
                 //String value = String.valueOf(Math.floor((Math.random()*1000000000)));
                 String value = String.valueOf(i);
                 System.out.println(value);
@@ -51,7 +52,7 @@ public class ObjectMapperWriter {
 
             System.out.println("Done");
         }  catch(Exception e){
-            System.out.println(e);
+            System.out.println(e.toString());
         } finally {
             if (cluster != null) cluster.close();                                          // (5)
         }
